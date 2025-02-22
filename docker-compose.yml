@@ -1,0 +1,90 @@
+services:
+  # image project
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    environment:
+      XDEBUG_MODE: debug
+      XDEBUG_SESSION: 1
+      XDEBUG_CONFIG: "client_host=host.docker.internal client_port=9003"
+    depends_on:
+      - redis
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - datasell
+
+  # nginx
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT}:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/:/etc/nginx/conf.d/
+    networks:
+      - datasell
+
+  # db mysql
+  postgres:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./.docker/postgres/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - datasell
+
+  # pgAdmin
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8084:80"
+    depends_on:
+      - postgres
+    volumes:
+      - ./.docker/pgadmin:/var/lib/pgadmin
+    networks:
+      - datasell
+
+  # queue
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command:
+      - "bash"
+      - "-c"
+      - "php artisan queue:listen"
+    volumes:
+      - ./:/var/www
+    depends_on:
+      - redis
+      - app
+    networks:
+      - datasell
+  # redis
+  redis:
+    image: redis:latest
+    networks:
+      - datasell
+
+networks:
+  datasell:
+    driver: bridge
