@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\DTOs\CustomerDTO;
+use App\Models\Customer;
 use App\Repositories\Contracts\CustomerRepositoryInterface;
 use App\Traits\PaginatesQuery;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -29,10 +30,16 @@ class CustomerRepository implements CustomerRepositoryInterface
 
         DB::insert($query, [$customer->name, $customer->email, $customer->city]);
 
-        return DB::selectOne(
+        $result = DB::selectOne(
             "SELECT * FROM customers WHERE email = ? ORDER BY id DESC LIMIT 1",
             [$customer->email]
         );
+
+        if (!$result) {
+            throw new \Exception('Failed to create customer');
+        }
+
+        return new Customer((array) $result);
     }
 
     public function update(int $id, CustomerDTO $customer): object

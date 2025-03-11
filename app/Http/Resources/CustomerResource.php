@@ -12,12 +12,13 @@ class CustomerResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request): array
     {
         return [
-            'name' => $this->name,
+            'id'    => $this->id,
+            'name'  => $this->name,
             'email' => $this->email,
-            'city' => $this->city,
+            'city'  => $this->city,
         ];
     }
 }

@@ -36,7 +36,7 @@ class CustomerController extends Controller
         $input = $request->validated();
         $customerDTO = CustomerDTO::fromRequest($input);
         $customer = $this->customerRepository->store($customerDTO);
-
+        dd($customer);
         return CustomerResource::make($customer);
     }
 
