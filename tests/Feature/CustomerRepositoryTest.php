@@ -3,14 +3,12 @@
 namespace Tests\Feature;
 
 use App\Repositories\Contracts\CustomerRepositoryInterface;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\DTOs\CustomerDTO;
 use App\Models\Customer;
 use Tests\TestCase;
 
 class CustomerRepositoryTest extends TestCase
 {
-    use DatabaseTransactions;
 
     protected CustomerRepositoryInterface $customerRepository;
 
