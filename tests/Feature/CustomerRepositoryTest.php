@@ -2,16 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Repositories\Contracts\CustomerRepositoryInterface;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\DTOs\CustomerDTO;
 use App\Models\Customer;
-use App\Repositories\Contracts\CustomerRepositoryInterface;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class CustomerRepositoryTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     protected CustomerRepositoryInterface $customerRepository;
 
