@@ -26,7 +26,7 @@ class CustomerController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $perPage = $request->get('per_page', 15);
-        $customers = $this->customerRepository->getAllPaginated($perPage);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $customers = $this->customerRepository->getAllPaginated($perPage);
 
         return CustomerResource::collection($customers);
     }
@@ -36,7 +36,6 @@ class CustomerController extends Controller
         $input = $request->validated();
         $customerDTO = CustomerDTO::fromRequest($input);
         $customer = $this->customerRepository->store($customerDTO);
-        dd($customer);
         return CustomerResource::make($customer);
     }
 

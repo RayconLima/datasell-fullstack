@@ -14,9 +14,13 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libpq-dev && \
-    docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd sockets && \
-    pecl install xdebug && \
-    docker-php-ext-enable xdebug
+    docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd sockets
+
+# Xdebug config
+COPY docker/php/xdebug.ini /usr/local/etc/php/conf.d
+RUN pecl install xdebug && \
+docker-php-ext-enable xdebug
+
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
